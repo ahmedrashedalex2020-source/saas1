@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
-import { Activity, Lock, Mail, ArrowRight, AlertCircle, KeyRound, CheckCircle } from 'lucide-react';
+import { Activity, Lock, Mail, ArrowRight, AlertCircle } from 'lucide-react';
 
 interface LoginScreenProps {
   onLoginSuccess: () => void;
 }
 
 export const LoginScreen: React.FC<LoginScreenProps> = ({ onLoginSuccess }) => {
-  const [email, setEmail] = useState('mayalaa560@gmail.com');
-  const [password, setPassword] = useState('alaa1234');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
@@ -25,12 +25,6 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ onLoginSuccess }) => {
         setIsLoading(false);
       }
     }, 400);
-  };
-
-  const handleQuickFill = () => {
-    setEmail('mayalaa560@gmail.com');
-    setPassword('alaa1234');
-    setError('');
   };
 
   return (
@@ -101,33 +95,6 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ onLoginSuccess }) => {
           </button>
 
         </form>
-
-        {/* Credentials Display & Quick-Fill Card */}
-        <div className="mt-6 pt-5 border-t border-slate-100 text-center space-y-2">
-          <div className="flex items-center justify-center gap-1.5 text-xs font-semibold text-slate-700">
-            <KeyRound className="w-3.5 h-3.5 text-teal-600" />
-            <span>بيانات الدخول المصرح بها:</span>
-          </div>
-
-          <div className="bg-slate-50 p-3 rounded-2xl border border-slate-200 text-xs font-mono text-slate-700 space-y-1">
-            <div className="flex items-center justify-between px-2">
-              <span className="text-slate-400 font-sans text-[11px]">البريد:</span>
-              <strong className="text-teal-800 font-mono">mayalaa560@gmail.com</strong>
-            </div>
-            <div className="flex items-center justify-between px-2 pt-1 border-t border-slate-200/60">
-              <span className="text-slate-400 font-sans text-[11px]">كلمة المرور:</span>
-              <strong className="text-teal-800 font-mono">alaa1234</strong>
-            </div>
-          </div>
-
-          <button
-            type="button"
-            onClick={handleQuickFill}
-            className="text-[11px] font-semibold text-teal-600 hover:text-teal-700 hover:underline cursor-pointer pt-1"
-          >
-            تعبئة البيانات تلقائياً في الحقول
-          </button>
-        </div>
 
       </div>
     </div>
