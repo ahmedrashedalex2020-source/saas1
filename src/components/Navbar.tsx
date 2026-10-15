@@ -1,9 +1,9 @@
 import React from 'react';
-import { Activity, Plus, BarChart3, Calendar, Settings, Sparkles, FileText } from 'lucide-react';
+import { Activity, Plus, BarChart3, Calendar, Settings, Sparkles, Users } from 'lucide-react';
 
 interface NavbarProps {
-  activeTab: 'dashboard' | 'sessions' | 'analytics' | 'settings';
-  setActiveTab: (tab: 'dashboard' | 'sessions' | 'analytics' | 'settings') => void;
+  activeTab: 'dashboard' | 'patients' | 'sessions' | 'analytics' | 'settings';
+  setActiveTab: (tab: 'dashboard' | 'patients' | 'sessions' | 'analytics' | 'settings') => void;
   onOpenAddModal: () => void;
   onOpenAiAdvisor: () => void;
   centerName: string;
@@ -38,7 +38,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           <nav className="hidden md:flex items-center gap-1 bg-slate-100 p-1 rounded-xl">
             <button
               onClick={() => setActiveTab('dashboard')}
-              className={`px-4 py-2 text-xs font-semibold rounded-lg transition-all ${
+              className={`px-3.5 py-2 text-xs font-semibold rounded-lg transition-all ${
                 activeTab === 'dashboard'
                   ? 'bg-white text-teal-700 shadow-sm'
                   : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
@@ -47,19 +47,30 @@ export const Navbar: React.FC<NavbarProps> = ({
               الرئيسية
             </button>
             <button
+              onClick={() => setActiveTab('patients')}
+              className={`px-3.5 py-2 text-xs font-semibold rounded-lg transition-all flex items-center gap-1.5 ${
+                activeTab === 'patients'
+                  ? 'bg-white text-teal-700 shadow-sm'
+                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
+              }`}
+            >
+              <Users className="w-3.5 h-3.5" />
+              ملفات العملاء (تعدد الجلسات)
+            </button>
+            <button
               onClick={() => setActiveTab('sessions')}
-              className={`px-4 py-2 text-xs font-semibold rounded-lg transition-all flex items-center gap-1.5 ${
+              className={`px-3.5 py-2 text-xs font-semibold rounded-lg transition-all flex items-center gap-1.5 ${
                 activeTab === 'sessions'
                   ? 'bg-white text-teal-700 shadow-sm'
                   : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
               }`}
             >
               <Calendar className="w-3.5 h-3.5" />
-              سجل الحالات والجلسات
+              سجل كل الجلسات
             </button>
             <button
               onClick={() => setActiveTab('analytics')}
-              className={`px-4 py-2 text-xs font-semibold rounded-lg transition-all flex items-center gap-1.5 ${
+              className={`px-3.5 py-2 text-xs font-semibold rounded-lg transition-all flex items-center gap-1.5 ${
                 activeTab === 'analytics'
                   ? 'bg-white text-teal-700 shadow-sm'
                   : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
@@ -70,7 +81,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             </button>
             <button
               onClick={() => setActiveTab('settings')}
-              className={`px-4 py-2 text-xs font-semibold rounded-lg transition-all flex items-center gap-1.5 ${
+              className={`px-3.5 py-2 text-xs font-semibold rounded-lg transition-all flex items-center gap-1.5 ${
                 activeTab === 'settings'
                   ? 'bg-white text-teal-700 shadow-sm'
                   : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
@@ -109,6 +120,12 @@ export const Navbar: React.FC<NavbarProps> = ({
             className={`pb-1 ${activeTab === 'dashboard' ? 'text-teal-600 font-bold border-b-2 border-teal-600' : ''}`}
           >
             الرئيسية
+          </button>
+          <button
+            onClick={() => setActiveTab('patients')}
+            className={`pb-1 ${activeTab === 'patients' ? 'text-teal-600 font-bold border-b-2 border-teal-600' : ''}`}
+          >
+            العملاء
           </button>
           <button
             onClick={() => setActiveTab('sessions')}

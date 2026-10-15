@@ -7,6 +7,8 @@ interface SessionModalProps {
   onClose: () => void;
   onSave: (session: PatientSession) => void;
   sessionToEdit?: PatientSession | null;
+  initialClientData?: { clientName: string; phone: string; condition: string } | null;
+  existingClients?: { name: string; phone: string; condition: string }[];
   commonConditions: string[];
   commonExtraItems: { name: string; amount: number }[];
   defaultSessionPrice: number;
@@ -18,6 +20,8 @@ export const SessionModal: React.FC<SessionModalProps> = ({
   onClose,
   onSave,
   sessionToEdit,
+  initialClientData,
+  existingClients = [],
   commonConditions,
   commonExtraItems,
   defaultSessionPrice,
@@ -67,6 +71,19 @@ export const SessionModal: React.FC<SessionModalProps> = ({
       setPaidAmount(sessionToEdit.paidAmount);
       setPaymentMethod(sessionToEdit.paymentMethod);
       setNotes(sessionToEdit.notes || '');
+    } else if (initialClientData) {
+      setClientName(initialClientData.clientName);
+      setPhone(initialClientData.phone);
+      setCondition(initialClientData.condition || commonConditions[0]);
+      setSessionDate(new Date().toISOString().split('T')[0]);
+      setSessionTime('10:00');
+      setBasePrice(defaultSessionPrice);
+      setExtraItems([]);
+      setHasPercentage(false);
+      setPaymentStatus('paid');
+      setPaidAmount(defaultSessionPrice);
+      setPaymentMethod('cash');
+      setNotes('');
     } else {
       setClientName('');
       setPhone('');
@@ -81,7 +98,19 @@ export const SessionModal: React.FC<SessionModalProps> = ({
       setPaymentMethod('cash');
       setNotes('');
     }
-  }, [sessionToEdit, isOpen, defaultSessionPrice, commonConditions]);
+  }, [sessionToEdit, initialClientData, isOpen, defaultSessionPrice, commonConditions]);
+
+  // Handle selecting an existing client from dropdown
+  const handleSelectExistingClient = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedName = e.target.value;
+    if (!selectedName) return;
+    const found = existingClients.find(c => c.name === selectedName);
+    if (found) {
+      setClientName(found.name);
+      setPhone(found.phone || '');
+      if (found.condition) setCondition(found.condition);
+    }
+  };
 
   // Calculate total price automatically
   const extrasTotal = extraItems.reduce((acc, item) => acc + item.amount, 0);
@@ -104,7 +133,6 @@ export const SessionModal: React.FC<SessionModalProps> = ({
     };
   }
 
-  // Update paid amount automatically if status is paid
   const handleStatusChange = (status: 'paid' | 'pending' | 'partial') => {
     setPaymentStatus(status);
     if (status === 'paid') {
@@ -172,7 +200,7 @@ export const SessionModal: React.FC<SessionModalProps> = ({
         <div className="px-6 py-4 border-b border-slate-200 flex items-center justify-between sticky top-0 bg-white z-10">
           <div>
             <h3 className="text-base font-bold text-slate-900">
-              {sessionToEdit ? 'تعديل بيانات الجلسة والحالة' : 'تسجيل حضور جلسة جديدة'}
+              {sessionToEdit ? 'تعديل بيانات الجلسة والحالة' : initialClientData ? `تسجيل جلسة جديدة للعميل: ${initialClientData.clientName}` : 'تسجيل حضور جلسة جديدة'}
             </h3>
             <p className="text-xs text-slate-500">إدخال تفاصيل المريض، سعر الجلسة، والبنود الإضافية والخصومات</p>
           </div>
@@ -187,6 +215,23 @@ export const SessionModal: React.FC<SessionModalProps> = ({
         {/* Form Body */}
         <form onSubmit={handleSubmit} className="p-6 space-y-5">
           
+          {/* Quick Select Existing Client if not editing or pre-filled */}
+          {!sessionToEdit && !initialClientData && existingClients.length > 0 && (
+            <div className="bg-teal-50/60 p-3.5 rounded-2xl border border-teal-200">
+              <label className="block text-xs font-bold text-teal-900 mb-1">اختيار عميل مسجل مسبقاً (اختياري لتسريع الإدخال)</label>
+              <select
+                onChange={handleSelectExistingClient}
+                defaultValue=""
+                className="w-full px-3 py-2 text-xs bg-white border border-teal-200 rounded-xl focus:outline-none focus:border-teal-500 font-medium text-slate-800"
+              >
+                <option value="" disabled>-- اختر من قائمة العملاء المسجلين --</option>
+                {existingClients.map((c, i) => (
+                  <option key={i} value={c.name}>{c.name} ({c.phone || 'بدون هاتف'}) - {c.condition}</option>
+                ))}
+              </select>
+            </div>
+          )}
+
           {/* Client Info */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>

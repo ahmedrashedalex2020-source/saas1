@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { PatientSession } from '../types';
-import { Search, Filter, Edit3, Trash2, Calendar, FileSpreadsheet, CheckCircle, Clock, AlertCircle, Plus } from 'lucide-react';
+import { Search, Filter, Edit3, Trash2, Calendar, FileSpreadsheet, CheckCircle, Clock, AlertCircle, Plus, UserPlus } from 'lucide-react';
 
 interface SessionsTableProps {
   sessions: PatientSession[];
   onEditSession: (session: PatientSession) => void;
   onDeleteSession: (id: string) => void;
   onAddSession: () => void;
+  onAddSessionForClient: (clientName: string, phone: string, condition: string) => void;
+  onOpenClientProfile: (clientName: string, phone: string, condition: string) => void;
   currency: string;
 }
 
@@ -15,6 +17,8 @@ export const SessionsTable: React.FC<SessionsTableProps> = ({
   onEditSession,
   onDeleteSession,
   onAddSession,
+  onAddSessionForClient,
+  onOpenClientProfile,
   currency,
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -74,7 +78,7 @@ export const SessionsTable: React.FC<SessionsTableProps> = ({
       <div className="p-5 border-b border-slate-200 flex flex-col md:flex-row items-center justify-between gap-4 bg-slate-50/50">
         <div>
           <h2 className="text-base font-bold text-slate-900">سجل حضور الحالات والجلسات المرضية</h2>
-          <p className="text-xs text-slate-500 mt-0.5">إدارة الحضور، الأسعار، تحليل المدفوعات، والبنود الإضافية</p>
+          <p className="text-xs text-slate-500 mt-0.5">إدارة الحضور، أسعار الجلسات، تحليل المدفوعات، وإمكانية إضافة جلسات متعددة لكل عميل</p>
         </div>
 
         <div className="flex items-center gap-2.5 w-full md:w-auto justify-end">
@@ -91,7 +95,7 @@ export const SessionsTable: React.FC<SessionsTableProps> = ({
             className="px-4 py-2 text-xs font-semibold text-white bg-teal-600 hover:bg-teal-700 rounded-xl transition-all flex items-center gap-1.5 shadow-xs"
           >
             <Plus className="w-4 h-4" />
-            <span>تسجيل حضور حالة</span>
+            <span>تسجيل حضور جلسة جديدة</span>
           </button>
         </div>
       </div>
@@ -196,7 +200,13 @@ export const SessionsTable: React.FC<SessionsTableProps> = ({
                 <tr key={session.id} className="hover:bg-slate-50/80 transition-colors">
                   {/* Client Name & Phone */}
                   <td className="py-3.5 px-4">
-                    <div className="font-bold text-slate-900">{session.clientName}</div>
+                    <button
+                      onClick={() => onOpenClientProfile(session.clientName, session.phone, session.condition)}
+                      className="font-bold text-slate-900 hover:text-teal-700 transition-colors text-right cursor-pointer underline decoration-dotted underline-offset-4"
+                      title="عرض ملف العميل وجلساته المتعددة"
+                    >
+                      {session.clientName}
+                    </button>
                     <div className="text-slate-400 text-[11px] font-mono tabular-nums">{session.phone || 'بدون هاتف'}</div>
                   </td>
 
@@ -258,6 +268,13 @@ export const SessionsTable: React.FC<SessionsTableProps> = ({
                   {/* Actions */}
                   <td className="py-3.5 px-4 text-center whitespace-nowrap">
                     <div className="flex items-center justify-center gap-1.5">
+                      <button
+                        onClick={() => onAddSessionForClient(session.clientName, session.phone, session.condition)}
+                        className="p-1.5 text-slate-500 hover:text-teal-700 hover:bg-teal-50 rounded-lg transition-colors"
+                        title="إضافة جلسة جديدة لهذا العميل"
+                      >
+                        <UserPlus className="w-4 h-4" />
+                      </button>
                       <button
                         onClick={() => onEditSession(session)}
                         className="p-1.5 text-slate-500 hover:text-teal-600 hover:bg-teal-50 rounded-lg transition-colors"
