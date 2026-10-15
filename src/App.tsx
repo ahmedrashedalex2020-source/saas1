@@ -21,7 +21,12 @@ export default function App() {
   const [sessions, setSessions] = useState<PatientSession[]>(() => {
     const saved = localStorage.getItem('pt_sessions_data');
     if (saved) {
-      try { return JSON.parse(saved); } catch (e) { }
+      try {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          return parsed;
+        }
+      } catch (e) { }
     }
     return initialSessions;
   });
