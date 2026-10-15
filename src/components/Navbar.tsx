@@ -1,11 +1,12 @@
 import React from 'react';
-import { Activity, Plus, BarChart3, Calendar, Settings, Sparkles, Users } from 'lucide-react';
+import { Activity, Plus, BarChart3, Calendar, Settings, Sparkles, Users, LogOut } from 'lucide-react';
 
 interface NavbarProps {
   activeTab: 'dashboard' | 'patients' | 'sessions' | 'analytics' | 'settings';
   setActiveTab: (tab: 'dashboard' | 'patients' | 'sessions' | 'analytics' | 'settings') => void;
   onOpenAddModal: () => void;
   onOpenAiAdvisor: () => void;
+  onLogout: () => void;
   centerName: string;
 }
 
@@ -14,6 +15,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   setActiveTab,
   onOpenAddModal,
   onOpenAiAdvisor,
+  onLogout,
   centerName,
 }) => {
   return (
@@ -55,7 +57,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               }`}
             >
               <Users className="w-3.5 h-3.5" />
-              ملفات العملاء (تعدد الجلسات)
+              ملفات العملاء
             </button>
             <button
               onClick={() => setActiveTab('sessions')}
@@ -108,6 +110,14 @@ export const Navbar: React.FC<NavbarProps> = ({
             >
               <Plus className="w-4 h-4" />
               <span>إضافة جلسة جديدة</span>
+            </button>
+
+            <button
+              onClick={onLogout}
+              className="p-2 text-slate-500 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all"
+              title="تسجيل الخروج"
+            >
+              <LogOut className="w-4 h-4" />
             </button>
           </div>
 

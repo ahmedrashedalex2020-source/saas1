@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { PatientSession, CenterSettings } from './types';
 import { initialSessions, initialSettings } from './data/mockData';
+import { LoginScreen } from './components/LoginScreen';
 import { Navbar } from './components/Navbar';
 import { DashboardStats } from './components/DashboardStats';
 import { SessionsTable } from './components/SessionsTable';
@@ -13,6 +14,10 @@ import { SettingsView } from './components/SettingsView';
 import { Activity, Plus, Calendar, BarChart3, ArrowUpRight, Users } from 'lucide-react';
 
 export default function App() {
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(() => {
+    return localStorage.getItem('pt_auth_logged_in') === 'true';
+  });
+
   const [sessions, setSessions] = useState<PatientSession[]>(() => {
     const saved = localStorage.getItem('pt_sessions_data');
     if (saved) {
@@ -47,6 +52,11 @@ export default function App() {
   useEffect(() => {
     localStorage.setItem('pt_settings_data', JSON.stringify(settings));
   }, [settings]);
+
+  const handleLogout = () => {
+    localStorage.removeItem('pt_auth_logged_in');
+    setIsLoggedIn(false);
+  };
 
   const handleOpenAddModal = () => {
     setSessionToEdit(null);
@@ -102,6 +112,10 @@ export default function App() {
     ? sessions.filter(s => s.clientName.trim().toLowerCase() === selectedClient.name.trim().toLowerCase())
     : [];
 
+  if (!isLoggedIn) {
+    return <LoginScreen onLoginSuccess={() => setIsLoggedIn(true)} />;
+  }
+
   return (
     <div className="min-h-screen bg-slate-900/5 text-slate-900 font-sans antialiased flex flex-col selection:bg-teal-500 selection:text-white">
       
@@ -111,6 +125,7 @@ export default function App() {
         setActiveTab={setActiveTab}
         onOpenAddModal={handleOpenAddModal}
         onOpenAiAdvisor={() => setIsAiAdvisorOpen(true)}
+        onLogout={handleLogout}
         centerName={settings.centerName}
       />
 
